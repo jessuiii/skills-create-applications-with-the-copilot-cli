@@ -122,6 +122,8 @@ function main(argv) {
   }
 }
 
+module.exports = { parseNumbers, calc };
+
 if (require.main === module) {
   main(process.argv);
 }
