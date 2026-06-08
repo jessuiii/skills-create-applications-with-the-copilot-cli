@@ -8,6 +8,9 @@
   - subtract  : Subtraction (subtract numbers in order)
   - multiply  : Multiplication (multiply two or more numbers)
   - divide    : Division (divide numbers in order) — division by zero handled
+  - mod       : Modulo (remainder)
+  - pow       : Exponentiation (power)
+  - sqrt      : Square root (single argument)
 
   Usage examples:
     node src/calculator.js add 2 3         # 5
@@ -48,14 +51,43 @@ function calc(op, nums) {
         if (b === 0) throw new Error('Division by zero');
         return a / b;
       }, nums[0]);
+    case 'mod':
+      // modulo: remainder of divisions in order; check division by zero
+      return nums.slice(1).reduce((a, b) => {
+        if (b === 0) throw new Error('Division by zero in modulo');
+        return modulo(a, b);
+      }, nums[0]);
+    case 'pow':
+      // power: expect exactly two arguments: base and exponent
+      if (nums.length !== 2) throw new Error('pow requires exactly two arguments: base and exponent');
+      return power(nums[0], nums[1]);
+    case 'sqrt':
+      // square root: expect exactly one argument
+      if (nums.length !== 1) throw new Error('sqrt requires exactly one argument');
+      return squareRoot(nums[0]);
     default:
       throw new Error(`Unknown operation: ${op}`);
   }
 }
 
+// Additional math helpers
+function modulo(a, b) {
+  if (b === 0) throw new Error('Division by zero in modulo');
+  return a % b;
+}
+
+function power(base, exponent) {
+  return Math.pow(base, exponent);
+}
+
+function squareRoot(n) {
+  if (n < 0) throw new Error('Cannot take square root of negative number');
+  return Math.sqrt(n);
+}
+
 function printHelp() {
   console.log('Node.js CLI Calculator');
-  console.log('Supported operations: add, subtract, multiply, divide');
+  console.log('Supported operations: add, subtract, multiply, divide, mod, pow, sqrt');
   console.log('Usage: node src/calculator.js <operation> <num1> <num2> [<num3> ...]');
   console.log('Example: node src/calculator.js add 2 3 4');
 }
@@ -122,7 +154,7 @@ function main(argv) {
   }
 }
 
-module.exports = { parseNumbers, calc };
+module.exports = { parseNumbers, calc, modulo, power, squareRoot };
 
 if (require.main === module) {
   main(process.argv);
